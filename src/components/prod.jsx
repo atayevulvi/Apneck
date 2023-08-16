@@ -1,52 +1,57 @@
-/* eslint-disable react/prop-types */
-import { useContext } from 'react';  // Import React and useContext from 'react'
-import { ShopContext } from './shopcontext';
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-unused-vars */
+import React, { useContext} from 'react'
+import { ShopContext } from './shopcontext'
 import ReactStars from "react-rating-stars-component";
 import { Link } from 'react-router-dom';
+import Details from '../pages/details';
 
-const Product = (props) => {  // Renamed the component to follow the convention of capitalizing component names
-    const { id, name, image, price, brand } = props.data;
-    const { addToCart, viewProductDetails, cartItems } = useContext(ShopContext);
-    const cartItemCount = cartItems[id];
 
-    return (
-        <div key={id} className="col-3 mb-4">
-            <div className="card">
-                <div className='p-2'>
-                    <img src={image} alt="" className='img-fluid card-img-top' />
+const prod = (props) => {
+    const {id, name, price, image, brand} = props.data;
+    const { addToCart, cartItems, viewProductDetails} = useContext(ShopContext);
+
+    const cartItemAmount = cartItems[id];
+  return <>
+ <div className="col mb-5">
+            <Link key={id}  className="card h-100 m-auto">
+            <img src={image} className="card-img-top img-fluid" alt="..." />
+              <div className="card-body">
+              <p className="card-text mb-2">{brand}</p>
+                <h5>{name} </h5>
+                <ReactStars
+                    count={5}
+                    edit={false}
+                    value={4}
+                    size={24}
+                    activeColor="#EA9D5A"
+                />
+                <div className="mb-3">
+                <p className="price mb-2"><span className="red">{price} </span>&nbsp;  <strike>{price * 2}$</strike></p>
+                <Link to='/details' onClick={() => viewProductDetails(id)}>
+                <p className="text-center"><button className='fs-4' id='clear-cart'>View Details</button></p>
+                </Link>
                 </div>
-                <div className="card-details p-3">
-                    <span>{brand}</span>
-                    <h5 className="my-2">{name}</h5>
-                    <ReactStars
-                        count={5}
-                        value={4}
-                        size={24}
-                        activeColor="#ff6400"
-                    />
-                    <p className="price my-2">{price} <span className='text-danger'><strike>{price * 2}</strike></span></p>
-                    <div className='d-flex align-items-center justify-content-around mb-2'>
-                        <div className="col-5 d-flex align-items-center justify-content-around">
-                            <Link to={'./details'} className='view-button' onClick={() => viewProductDetails(id)}>View Details</Link>
-                        </div>
-                        <div className="col-7 d-flex align-items-center justify-content-around">
-                            <button className='Add' 
-                            onClick={() => {
-                                addToCart(id);
-                                event.target.classlist.toggle("red");
-                            }
-                            }
-                            >
-                                Add To Cart
-                                {cartItemCount > 0 && `(${cartItemCount})`}
-                        
-                        </button>
-                    </div>
-                </div>
-            </div>
+               <div className="d-flex justify-content-center">
+               <button 
+                  onClick={() => {
+                    addToCart(id);
+                    event.target.classList.toggle("red");
+                  }}
+                  className="myButton"
+                >
+                  Add To Cart
+                  {cartItemAmount > 0 && `(${cartItemAmount})`}
+                </button>
+               
+              
+               </div>
+              </div>
+            </Link>
+
+            
         </div>
-        </div >
-    );
+  </>
 }
 
-export default Product;  // Export the component with the corrected name
+export default prod

@@ -1,91 +1,94 @@
-/* eslint-disable no-undef */
-/* eslint-disable react/prop-types */
-import  { createContext, useState } from "react";
-import { PRODUCTS, PRODUCTS1 } from "../components/products";
+/* eslint-disable react-refresh/only-export-components */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-unused-vars */
+import React, { createContext, useState } from 'react'
+import { PRODUCTS, PRODUCTS1 } from '../components/products';
 
+// context
 export const ShopContext = createContext(null);
-
+// function
 const getDefaultCart = () => {
-  const cart = {};
+  const cart = [];
 
-  for (const product of PRODUCTS.concat(PRODUCTS1)) {
-    cart[product.id] = 0;
+  for (let i = 0; i < PRODUCTS.length + PRODUCTS1.length; i++) {
+    cart[i] = 0;
   }
+  
   return cart;
 };
 
-const ShopContextProvider = (props) => {
-  const [cartItems, setCartItems] = useState(getDefaultCart());
 
+const shopcontext = (props) => {
+  const [cartItems, setCartItems] = useState(getDefaultCart());
   const getTotalCartAmount = () => {
     let totalAmount = 0;
-    for (const productId in cartItems) {
-      const itemQuantity = cartItems[productId];
-      if (itemQuantity > 0) {
-        const itemInfo =
-          PRODUCTS.find((product) => product.id === Number(productId)) ||
-          PRODUCTS1.find((product) => product.id === Number(productId));
-        totalAmount += itemQuantity * itemInfo.price;
-      }
+  for (const item in cartItems) {
+    if (cartItems[item] > 0) {
+      let itemInfo = PRODUCTS.find((product) => product.id === Number(item)) || PRODUCTS1.find((product) => product.id === Number(item));
+      totalAmount += cartItems[item] * itemInfo.price;
     }
-    return totalAmount.toFixed(2);
+  }
+  return totalAmount.toFixed(2);
   };
 
   const getTotalCartProducts = () => {
     let totalProducts = 0;
-    for (const productId in cartItems) {
-      if (cartItems[productId] > 0) {
-        totalProducts += cartItems[productId];
+    for (const item in cartItems) {
+      if (cartItems[item] > 0) {
+        totalProducts += cartItems[item];
       }
     }
     return totalProducts;
   };
+  
 
   const addToCart = (productId) => {
     setCartItems((prev) => ({
       ...prev,
-      [productId]: prev[productId] + 1,
+      [productId]: prev[productId] + 1
     }));
   };
-
-  const removeCart = (productId) => {
+  
+  const removeToCart = (productId) => {
     setCartItems((prev) => ({
       ...prev,
-      [productId]: prev[productId] - 1,
+      [productId]: prev[productId] - 1
     }));
   };
-
+  
   const updateCartItemCount = (newAmount, productId) => {
     setCartItems((prev) => ({
       ...prev,
-      [productId]: newAmount,
+      [productId]: newAmount
     }));
   };
-
   const clearCart = () => {
-    const updateCartItems = {};
+    const updatedCartItems = {};
     for (const productId in cartItems) {
-      updateCartItems[productId] = 0;
+      updatedCartItems[productId] = 0;
     }
-    setCartItems(updateCartItems);
-  };
+    setCartItems(updatedCartItems);
+  };  
 
   const resetCart = () => {
-    setCartItems(getDefaultCart());
+    setCartItems([]);
   };
 
   const [selectedProduct, setSelectedProduct] = useState(null);
+
   const viewProductDetails = (productId) => {
     setSelectedProduct(productId);
   };
+
   const closeProductDetails = () => {
     setSelectedProduct(null);
   };
+  
 
   const contextValue = {
     cartItems,
     addToCart,
-    removeCart,
+    removeToCart,
     updateCartItemCount,
     getTotalCartAmount,
     getTotalCartProducts,
@@ -105,5 +108,5 @@ const ShopContextProvider = (props) => {
   );
 };
 
-export default ShopContextProvider;
 
+export default shopcontext

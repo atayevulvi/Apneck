@@ -1,68 +1,105 @@
-/* eslint-disable no-undef */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable react/jsx-key */
 /* eslint-disable no-unused-vars */
-import { PRODUCTS, PRODUCTS1 } from "../components/products"
-import React, { useContext } from "react"
-import { ShopContext } from "../components/shopContext"
-import CartItem from "../components/cartitem"
-import { Link } from "react-router-dom"
-const cart = () => {
-  const { getTotalCartAmount, getTotalCartProducts, ClearCart, CartItem } = useContext(ShopContext)
-  const TotalAmount = getTotalCartAmount();
-  const totalProducts = getTotalCartProducts()
-  return (
-    <>
-      {TotalAmount > 0 ?
-        <section className="cart-item p-5">
-          <div className="conatiner-xxl">
-            <div className="row">
-              <table>
-                <thead className="my-2">
-                  <th className="col-3">Product Image</th>
-                  <th className="col-3">Product Details</th>
-                  <th className="col-3">Edit</th>
-                  <th className="col-3">Coupons</th>
-                </thead>
+import React, { useContext, useState } from 'react'
+import pr1 from '../assets/images/products/f1.jpg'
+import pr2 from '../assets/images/products/f2.jpg'
+import { RiDeleteBack2Line } from 'react-icons/ri'
+import { Link } from 'react-router-dom'
+import { PRODUCTS } from '../components/products'
+import { PRODUCTS1 } from '../components/products'
+import { ShopContext } from '../components/shopcontext'
+import CartItem from '../components/cartitem'
+import { useNavigate } from 'react-router-dom'
 
 
-                {[...PRODUCTS, ...PRODUCTS1].map((product) => {
-                  if (CartItem[product.id] !== 0) {
-                    return <CartItem key={product.id} data={product} />
-                  }
-                })}
-                <div className="mb-3 text-center p-3">
-                  <Link onClick={() => ClearCart(id)}>Clear cart</Link>
-                </div>
-              </table>
-            </div>
-          </div>
-          <hr />
+const cart = (props) => {
+    const { cartItems, getTotalCartAmount, clearCart } = useContext(ShopContext);
+    const totalAmount = getTotalCartAmount();
+    const navigate = useNavigate();
+    const [isMobile, setIsMobile] = useState(false)
 
-          <div className="mt-4 p-3 cart-total d-flex justify-content-between">
-            <div>
-              <button>Continue Shopping</button>
+    const handleResize = () => {
+      if (window.innerWidth < 576) {
+        setIsMobile(true)
+      } else {
+        setIsMobile(false)
+      }
+    }
+  
+    window.addEventListener("resize", handleResize)
+  
+  return <>
+  <section className="cart">
+    <div className="container-xxl p-5">
+        {totalAmount > 0 ?
+        <div className="row">
+        <div className='p-2 text-center'>
+            <h2>Cart</h2>
+            
+        </div>
+        <div className="col-12 col-md-5 text-center">
+                <h5>Product</h5>
             </div>
-            <div>
-              <h3>Total</h3>
-              <p className="my-">Total Products :<span className="price">{totalProducts}</span></p>
-              <p className="price mb-4">${TotalAmount}</p>
-              <button>Check Out</button>
+            <div className="col-12 col-md-5 text-center">
+                <h5>Details</h5>
             </div>
-          </div>
-        </section>
-        :
-        <section className="p-3">
-          <div className="conatiner-xxl">
-            <div className="row">
-              <div className="text-center">
-                <h3>Your Cart Is Empty</h3>
-                <p>click here to <Link to={'/shop'}>add items</Link></p>
+
+    <div className="p-3">
+    {[...PRODUCTS, ...PRODUCTS1].map((product) => {
+        if (cartItems[product.id] !== 0) {
+            return <CartItem key={product.id} data={product} />;
+        }
+        })}
+        <div className='col-12 p-2 text-end'>
+        <button onClick={() => clearCart()} id='clear-cart'> Clear Cart </button>
+        </div>
+
+        <hr />
+        <div className="row">
+      <div className="col-12 col-md-6 d-flex m-auto justify-content-center mt-4">
+        <button onClick={() => navigate("/shop")}>
+          {isMobile ? "Continue" : "Continue Shopping"}
+        </button>
+      </div>
+
+      <div className="col-12 col-md-6 total m-auto d-flex flex-column p-5">
+        <div className="col-12">
+          <div className="text-end">
+            <h2 className="mb-3">
+              <b>Total</b>
+            </h2>
+            <div className="align-items-center">
+              <div>
+                <p className="total-price align-items-center">
+                  <b>${totalAmount}</b>
+                </p>
               </div>
             </div>
+            <button
+              onClick={() => navigate("/checkout")}
+              className="mt-5"
+            >
+              {isMobile ? "Check Out" : "Proceed to Checkout"}
+            </button>
           </div>
-        </section>
-      }
-    </>
-  )
+        </div>
+      </div>
+    </div>
+    </div>
+        </div>
+    :
+    <div className="container-xxl">
+        <div className="row">
+            <div className="text-center p-5 mb-4">
+                <h2>Your Cart Is Empty!!!</h2>
+            </div>
+        </div>
+    </div>
+    }
+    </div>
+  </section>
+  </>;
 }
 
 export default cart

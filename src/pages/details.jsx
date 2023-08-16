@@ -1,18 +1,17 @@
-import Productdetails from "../components/productdetails"
+/* eslint-disable no-unused-vars */
+import React from 'react'
+import Productdetails from '../components/productdetails'
 
 const details = () => {
-   
-  return (
-    <>
-      <section className="details">
-        <div className="conatiner-xxl">
-            <div className="row">
-                <Productdetails/>
-            </div>
+  return<>
+  <section className="product-details p-5">
+    <div className="conntainer-xxl">
+        <div className="row">
+        <Productdetails />
         </div>
-      </section>
-    </>
-  )
+    </div>
+  </section>
+  </>
 }
 
 export default details
